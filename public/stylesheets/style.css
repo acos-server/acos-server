@@ -1,0 +1,52 @@
+body {
+  padding: 20px;
+  font: 14px "Open Sans", Helvetica, Arial, sans-serif;
+}
+
+div.contentPackage {
+  /*float: left;*/
+  width: 270px;
+  font-size: 12px;
+  margin: 10px;
+  padding: 0 0 0 0;
+  border: 1px;
+  background-color: #337ab7;
+  border-radius: 5px 15px 5px 5px;
+  -moz-border-radius: 5px 15px 5px 5px;
+  -webkit-border-radius: 5px 15px 5px 5px;
+
+}
+
+div.contentPackageMain {
+  background-color: #EEE;
+  min-height: 140px;
+  padding: 10px;
+}
+div.contentPackage ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;  
+  margin-left: 10px;
+} 
+
+h3.packageTitle {
+  font-size: 14px;
+  width: 90%;
+  padding: 5px;
+  margin-top: 5px;
+  margin-left: 5px;
+}
+
+div.allContent {
+  display: none;
+}
+
+a.toggleContent {
+  float: right;
+}
+
+
+
+.js-showContent {
+  margin-top: 10px;
+}

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div>
+    <h2>An error occurred</h2>
+    <div class="alert alert-danger" role="alert">{{ message }}</div>
+    <p style="margin-bottom: 50px;">
+        <a href="/">Go back to main page</a>
+    </p>
+    {% if error.status or error.stack %}    
+    <p>{{ error.status }}</p>
+    <pre>{{ error.stack }}</pre>
+    {% endif %}
+</div>
+  
+{% endblock %}
