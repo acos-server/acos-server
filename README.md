@@ -1,10 +1,23 @@
-# Acos - Advanced Content Server
+﻿Acos - Advanced Content Server
+==============================
 
 Acos server and related sub-projects are a method of distributing browser-based
 smart learning content in a reusable and interoperable way. The core idea is
 that different types of smart learning content can be hosted in Acos and
 offered to various Learning Management Systems (LMS) using different protocols.
 
+This is a joint project with PAWS Lab at the University of Pittsburgh and
+Learning + Technology research group at Aalto University aiming at producing
+smart learning content on Python programming. The project Advanced Distributed
+Learning (ADL) Initiative.
+
+The project is led by Professor Peter Brusilovsky. In Aalto University,
+the following persons are working with the project:
+* Professor Lauri Malmi
+* Lassi Haaranen
+* Teemu Sirkiä
+
+The Acos server is designed and implemented by Lassi Haaranen and Teemu Sirkiä.
 
 ## Installation
 
