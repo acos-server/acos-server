@@ -21,7 +21,7 @@
     
     "acos-html": "~0.1.0",
     "acos-annotated": "~0.1.0",
-    "acos-annotated-demo": "~0.1.0"
+    "acos-annotated-demo": "~0.1.0",
     "acos-logging-keygenerator": "~0.1.0"
   },
   "devDependencies": {
