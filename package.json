@@ -1,6 +1,6 @@
 {
   "name": "acos-server",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "scripts": {
     "start": "node ./bin/www"
   },
@@ -17,7 +17,6 @@
     "nunjucks": "~1.2.0",
     "serve-favicon": "~2.2.0",
     "lodash": "~4.2.1",
-    
     "acos-html": "~0.1.0",
     "acos-annotated": "~0.1.0",
     "acos-annotated-demo": "~0.1.0",
@@ -30,5 +29,5 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/acos-server/acos-server.git"
-  }  
+  }
 }
