@@ -21,7 +21,9 @@ The Acos server is designed and implemented by Lassi Haaranen and Teemu Sirkiä.
 ## Installation
 
 To install Acos server, clone the repository and install necessary dependencies
-by running `npm install` in the acos-server directory.  
+by running `npm install` in the acos-server directory.  Note that `acos-server`
+expects [npm version 3](https://www.npmjs.com/package/npm3) in order to install
+dependencies of content packages correctly.
 
 For the time being, to install content types and packages use github notation
 with npm. E.g.:
@@ -31,6 +33,10 @@ with npm. E.g.:
 npm install github:acos-server/acos-jsvee
 # For JSVEE Python content
 npm install github:acos-server/acos-jsvee-python
+
+# When using npm3 you can also install the dependencies of a content package
+# straightaway, e.g. this would also install acos-jsparsons correctly:
+npm install acos-jsparsons-python
   ```
 
 ## Running
