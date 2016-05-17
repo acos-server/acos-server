@@ -146,8 +146,9 @@ indicate that an error occurred.
 ### `handleEvent`
 
 ```javascript
-var handleEvent = function(event, payload, req, res, protocolData) {
-  res.json({ 'status': 'OK' });
+var handleEvent = function(event, payload, req, res, protocolPayload, responseObj, cb) {
+  res.json({ 'status': 'OK', 'protocol': responseObj.protocol, 'content': responseObj.content });
+  cb(event, payload, req, res, protocolPayload, responseObj);
 };
 ```
 
@@ -163,6 +164,11 @@ The parameter `event` contains the name of the occurred event, `payload`
 contains the actual event data sent by the activity and `protocolData`
 contains the protocol-specific information such as user id or other required
 data.
+
+The parameter `responseObj` contains an object with two keys `protocol` and `content`. These should be sent back to the browser. The protocol can add any data to `responseObj.protocol` that
+should be handled by the client-side file `events.js`.
+
+The `cb` function must be called as shown in the example after the event is processed.
 
 
 ### `register`
@@ -236,7 +242,7 @@ Below is an example implementation:
 
   var ACOS = function() {};
 
-  ACOS.sendEvent = function(event, payload) {
+  ACOS.sendEvent = function(event, payload, callback) {
 
     var protocolData = { /* some data */ };
 
@@ -255,7 +261,11 @@ Below is an example implementation:
       // Sending log events is forbidden
       return;
     } else {
-      $.post(target + "/event", data);
+      $.post(target + "/event", data).done(function(response) {
+        if (callback) {
+          callback(response.content);
+        }
+      });
     }
 
   };
@@ -273,12 +283,16 @@ It is important that the `noLogging` variable is checked in order to prevent
 sending any logging events to the server if the activity is launched in mode
 where logging is not allowed.
 
+If the `callback` parameter is defined, the callback function must be called
+by giving the response from the content as the first parameter.
+
 
 
 ## Creating a new content type
 
-The following functions and variables must be available: `initialize`, `handleEvent`, `register`,
-`namespace`, `packageType`, `installedContentPackages`, `meta`. See below for details.
+The following functions and variables must be available: `initialize`, `register`,
+`namespace`, `packageType`, `installedContentPackages`, `meta`. Function `handleEvent`
+can be implemented. See below for details.
 
 ### `initialize`
 
@@ -319,9 +333,12 @@ If the initialization fails, `params.error` should contain an error message to
 indicate that an error occurred.
 
 
-### `handleEvent`
+### `handleEvent` (optional)
 ```javascript
-var handleEvent = function(event, payload, req, res, protocolPayload) {
+var handleEvent = function(event, payload, req, res, protocolPayload, responseObj, cb) {
+  // ...
+  responseObj.content.myResponse = 'something';
+  cb(event, payload, req, res, protocolPayload, responseObj);
 
 };
 ```
@@ -336,6 +353,12 @@ the protocol-specific information such as user id or other required data.
 
 As the protocol communicates with the browser, content type should not send any data
 although the variable `res` is available.
+
+The parameter `responseObj` contains an object with two keys `protocol` and `content`.
+Content type can add any data to `responseObj.content` to be sent back to the browser.
+Both the content type and the content share the same key `content`.
+
+The `cb` function must be called as shown in the example after the event is processed.
 
 
 ### `register`
@@ -389,8 +412,9 @@ variable `name` is the namespace for the content type.
 
 ## Creating a new content package
 
-The following functions and variables must be available: `initialize`, `handleEvent`,
-`register`, `namespace`, `contentTypeNamespace`, `packageType`, `meta`. See below for details.
+The following functions and variables must be available: `initialize`,
+`register`, `namespace`, `contentTypeNamespace`, `packageType`, `meta`. Function
+`handleEvent` can be implemented if needed. See below for details.
 
 ### `initialize`
 
@@ -440,6 +464,33 @@ In the example above, `contenttype` is the namespace of the content type and
 
 Express instance is available in the variable `app` and the Acos configuration
 file as object in `config`.
+
+### `handleEvent` (optional)
+```javascript
+var handleEvent = function(event, payload, req, res, protocolPayload, responseObj, cb) {
+  // ...
+  responseObj.content.myResponse = 'something';
+  cb(event, payload, req, res, protocolPayload, responseObj);
+
+};
+```
+
+This function receives events from the client browser. It is up to the content
+type how to process the data. The event may be logged, sent to another server etc...
+Or the event can just be ignored if there is no need to process it.
+
+The parameter `event` contains the name of the occurred event, `payload`
+contains the actual event data sent by the activity and `protocolData` contains
+the protocol-specific information such as user id or other required data.
+
+As the protocol communicates with the browser, content should not send any data
+although the variable `res` is available.
+
+The parameter `responseObj` contains an object with two keys `protocol` and `content`.
+Content can add any data to `responseObj.content` to be sent back to the browser.
+Both the content type and the content share the same key `content`.
+
+The `cb` function must be called as shown in the example after the event is processed.
 
 
 ### Other definitions
@@ -542,16 +593,17 @@ var meta = {
 
 ## Events
 
-Events provide a mechanism how content can send data back to the server. This can
-be any data to be logged, grading event or any other event that content wishes
-implement.
+Events provide a mechanism how the client-silde content can send data back to
+the server. This can be any data to be logged, grading event or any other event
+that content wishes implement. Also the content can respond and deliver some
+information back to the browser.
 
 ### Raising events
 
 In the client-side, content can use the following function to send events to the server:
 
 ```javascript
-ACOS.sendEvent = function(event, payload) {
+ACOS.sendEvent = function(event, payload, callback) {
 
 }
 ```
@@ -562,6 +614,9 @@ should always be available. The parameter `event` is the name of the event and
 
 When an event is received, Acos forwards the event to the protocol and content type
 which can then handle the event in the function `handleEvent`.
+
+The server-side response from the content will be passed as the only parameter to
+`callback` if the callback function is defined.
 
 
 ### Event types
@@ -579,7 +634,8 @@ Grading event should contain the following object:
 }
 ```
 
-The object can also contain `feedback` having a textual feedback.
+The object can also contain `feedback` having a textual feedback. Protocols may define
+additional properties they support in addition to these.
 
 #### `log`
 

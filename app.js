@@ -1,9 +1,9 @@
 /*******************************************
-* Acos - Advanced Content Server
-* Server for hosting smart learning content
-*
-* Licensed under MIT license.
-*/
+ * Acos - Advanced Content Server
+ * Server for hosting smart learning content
+ *
+ * Licensed under MIT license.
+ */
 
 var express = require('express');
 var path = require('path');
@@ -244,20 +244,59 @@ app.all(urlPrefix, function(req, res) {
 
 app.post(urlPrefix + '/event', function(req, res) {
 
-  if (handlers.protocols[req.params.protocol] && handlers.contentTypes[req.params.contentType]) {
+  if (handlers.protocols[req.params.protocol] && handlers.contentTypes[req.params.contentType] && handlers.contentPackages[req.params.contentPackage]) {
 
     var event = req.body.event;
     var payload = JSON.parse(req.body.payload);
     var protocolData = JSON.parse(req.body.protocolData);
 
+    // Sync additional handlers
     for (var logger in handlers.loggers) {
       handlers.loggers[logger].handleEvent(event, payload, req, res, protocolData);
     }
 
-    handlers.contentTypes[req.params.contentType].handleEvent(event, payload, req, res, protocolData);
+    // Async handlers in protocol, content type and content package
+
+    var createChain = function(chain) {
+
+      var wrap = function(call, callback) {
+        return function() {
+          var args = [];
+          for (var i = 0; i < arguments.length; i++) {
+            args.push(arguments[i]);
+          }
+          args.push(callback);
+          call.apply(this, args);
+        };
+      };
+
+      var chained = function(event, payload, req, res, protocolData, responseObj) {
+        // Chain ready
+      };
+      for (var i = 0; i < chain.length; i++) {
+        chained = wrap(chain[i], chained);
+      }
+
+      return chained;
+
+    };
+
+    var chain = [];
 
     // Protocol is responsible for sending the response
-    handlers.protocols[req.params.protocol].handleEvent(event, payload, req, res, protocolData);
+    chain.push(handlers.protocols[req.params.protocol].handleEvent);
+
+    // Check which event handlers are defined
+    if (handlers.contentTypes[req.params.contentType].handleEvent) {
+      chain.push(handlers.contentTypes[req.params.contentType].handleEvent);
+    }
+    if (handlers.contentPackages[req.params.contentPackage].handleEvent) {
+      chain.push(handlers.contentPackages[req.params.contentPackage].handleEvent);
+    }
+
+    // Start the chain
+    var responseObj = { protocol: {}, content: {} };
+    createChain(chain)(event, payload, req, res, protocolData, responseObj);
 
   } else {
     res.status(404).send('Unsupported request!');
