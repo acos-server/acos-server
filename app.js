@@ -161,7 +161,11 @@ Object.keys(handlers.contentTypes).forEach(function(contentType) {
 
 });
 
-
+// ********************************************************************************
+// Prioritize API URLs
+var api = express.Router();
+app.use('/api/v1', api);
+// ********************************************************************************
 
 
 
@@ -532,9 +536,7 @@ var createFilters = function(req) {
 };
 
 // **********************************************
-
-var api = express.Router();
-app.use('/api/v1', api);
+// API
 
 api.get('/', function(req, res) {
 
@@ -548,7 +550,7 @@ api.get('/', function(req, res) {
 
 // All content types
 api.get('/content', function(req, res) {
-  var expand = req.query.expand && req.query.expand.split(',').indexOf('subitems') > -1;
+  var expand = req.query.expand && (req.query.expand.split(',').indexOf('subitems') > -1 || req.query.expand.split(',').indexOf('children') > -1);
   var filters = createFilters(req);
   var response = { contentTypes: contentTypesAsJSON(filters, expand) };
   res.json(response);
@@ -556,7 +558,7 @@ api.get('/content', function(req, res) {
 
 // All content packages in the given content type
 api.get('/content/:contentType([a-zA-Z0-9_-]+)', function(req, res) {
-  var expand = req.query.expand && req.query.expand.split(',').indexOf('subitems') > -1;
+  var expand = req.query.expand && (req.query.expand.split(',').indexOf('subitems') > -1 || req.query.expand.split(',').indexOf('children') > -1);
   var filters = createFilters(req);
   var response = contentPackagesAsJSON(req.params.contentType, filters, expand);
   if (response) {
@@ -581,7 +583,7 @@ api.get('/content/:contentType([a-zA-Z0-9_-]+)/:contentPackage([a-zA-Z0-9_-]+)',
 
 // Information about the given exercise
 api.get('/content/:contentType([a-zA-Z0-9_-]+)/:contentPackage([a-zA-Z0-9_-]+)/:name([a-zA-Z0-9_-]+)', function(req, res) {
-  var expand = req.query.expand && req.query.expand.split(',').indexOf('subitems') > -1;
+  var expand = req.query.expand && (req.query.expand.split(',').indexOf('subitems') > -1 || req.query.expand.split(',').indexOf('children') > -1);
   var expandProtocolUrls = req.query.expand && req.query.expand.split(',').indexOf('protocol_urls') > -1;
   var filters = createFilters(req);
   var response = ContentAsJSON(req.params.contentType, req.params.contentPackage, name, filters, expand, expandProtocolUrls);
