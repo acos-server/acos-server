@@ -285,6 +285,11 @@ where logging is not allowed.
 
 If the `callback` parameter is defined, the callback function must be called
 by giving the response from the content as the first parameter.
+A second parameter signalling an error may be given to the callback if the event
+was not handled successfully. If there is no error, the parameter should be set
+to `null`. The error parameter should be an object with fields
+`status` (values `OK`, `ERROR`, or potentially something else) and
+`error` (a message string). The protocol could also add more fields if necessary.
 
 
 
@@ -615,8 +620,12 @@ should always be available. The parameter `event` is the name of the event and
 When an event is received, Acos forwards the event to the protocol and content type
 which can then handle the event in the function `handleEvent`.
 
-The server-side response from the content will be passed as the only parameter to
+The server-side response from the content will be passed as the first parameter to
 `callback` if the callback function is defined.
+If the event handling fails to an error (due to, e.g., network or server problems),
+the callback function may receive a second parameter to signal the error state:
+an object with fields `status` (possible values "OK", "ERROR", ...) and
+`error` (a message string). Other fields may also be defined, depending on the protocol.
 
 
 ### Event types
