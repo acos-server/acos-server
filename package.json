@@ -1,6 +1,6 @@
 {
   "name": "acos-server",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "scripts": {
     "start": "node ./bin/www"
   },
@@ -9,12 +9,12 @@
     "acos-annotated-demo": "~0.1.0",
     "acos-html": "^0.2.0",
     "acos-logging-keygenerator": "~0.1.0",
-    "archiver": "^1.3.0",
+    "archiver": "^2.0.0",
     "body-parser": "^1.17.2",
     "colors": "~1.1.2",
     "compression": "^1.6.2",
     "cookie-parser": "^1.4.3",
-    "debug": "^2.6.8",
+    "debug": "^3.0.0",
     "express": "^4.15.3",
     "htmlencode": "0.0.4",
     "lodash": "^4.17.4",
