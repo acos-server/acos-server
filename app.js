@@ -219,7 +219,7 @@ app.all(urlPrefix, function(req, res) {
       var loggingScript = '<script> var AcosLogging = {noLogging: true};</script>';
       params.headContent += loggingScript;
       initialize();
-    } else if (req.query.logkey && /[0-9a-z]+/.test(req.query.logkey)) {
+    } else if (req.query.logkey && /^[0-9a-z]+$/.test(req.query.logkey)) {
       // Inject the logging key to the response
       crypto.randomBytes(256, function(err, bytes) {
         var loggingScript = '<script> var AcosLogging = {};';
@@ -605,20 +605,19 @@ handlers.loggers.logstore = {};
 
 handlers.loggers.logstore.handleEvent = function(event, payload, req, res, protocolData) {
   if (event === 'log' && req.body.logkey && /[0-9a-z]+/.test(req.body.logkey) && req.body.loggingSession && /[0-9a-z]+/.test(req.body.loggingSession)) {
-    var dir = config.publicLogDirectory + '/' + req.body.logkey;
+    var secretHash = crypto.createHash('sha1').update(req.body.logkey + (config.logKey || 'acos'));
+    var dir = config.publicLogDirectory + '/' + secretHash.digest('hex');
 
     fs.mkdir(dir, 0775, function(err) {
-      crypto.randomBytes(256, function(err, bytes) {
-        var data = {
-          timestamp: Date.now(),
-          contentType: req.params.contentType,
-          contentPackage: req.params.contentPackage,
-          name: req.params.name,
-          payload: payload,
-          protocolData: protocolData
-        };
-        fs.writeFile(dir + '/' + req.body.loggingSession, JSON.stringify(data) + '\r\n', { flag: 'a' }, function(err) {});
-      });
+      var data = {
+        timestamp: Date.now(),
+        contentType: req.params.contentType,
+        contentPackage: req.params.contentPackage,
+        name: req.params.name,
+        payload: payload,
+        protocolData: protocolData
+      };
+      fs.writeFile(dir + '/' + req.body.loggingSession, JSON.stringify(data) + '\r\n', { flag: 'a' }, function(err) {});
     });
   }
 };
