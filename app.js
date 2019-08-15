@@ -586,7 +586,7 @@ api.get('/content/:contentType([a-zA-Z0-9_-]+)/:contentPackage([a-zA-Z0-9_-]+)/:
   var expand = req.query.expand && (req.query.expand.split(',').indexOf('subitems') > -1 || req.query.expand.split(',').indexOf('children') > -1);
   var expandProtocolUrls = req.query.expand && req.query.expand.split(',').indexOf('protocol_urls') > -1;
   var filters = createFilters(req);
-  var response = ContentAsJSON(req.params.contentType, req.params.contentPackage, name, filters, expand, expandProtocolUrls);
+  var response = contentAsJSON(req.params.contentType, req.params.contentPackage, req.params.name, filters, expand, expandProtocolUrls);
   if (response) {
     res.json({ item: response });
   } else {
