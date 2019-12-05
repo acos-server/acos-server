@@ -3,33 +3,37 @@
 Acos features browser tests using WebDriverIO. Quick steps to setup testing
 environment and run tests:
 
-  1. Install WebDriverIO: `npm install webdriverio`
-  2. Install Selenium server from http://docs.seleniumhq.org/download/
-  3. Run Selenium server:
-    `java -jar /path/to/selenium-server-standalone-2.XX.X.jar`
-  4. Install webdrivers for the desired browsers, e.g. [Chrome webdriver](https://sites.google.com/a/chromium.org/chromedriver/downloads)
-  5. Start Acos server `node bin/www`
-  6. Run tests in Acos folder:
-    `./node_modules/webdriverio/bin/wdio wdio.conf.js`
+  1. If `npm install` correctly installed `devDependencies` you are good to run
+    tests inside Chrome browser. Else look into Configuring Tests section.
+  2. Start Acos server
+    `node bin/www`
+  3. Run tests in Acos folder:
+    `./node_modules/.bin/wdio`
 
 You can also run individual tests/suites, e.g.
-`wdio wdio.conf.js --mochaOpts.grep 'ps_hello'` would run tests that match with
-`ps_hello`
+`./node_modules/.bin/wdio --mochaOpts.grep 'ps_hello'`
+would run tests that match with `ps_hello`.
 
 For more detailed on getting started with WebDriverIO,
-see http://webdriver.io/guide/getstarted/install.html
+see https://webdriver.io/docs/gettingstarted.html
 
 # Configuring Tests
 
-Configuration for tests is found in `wdio.conf.js`. The most relevant settings
-are the `baseUrl` (default `http://localhost:3000`) and `capabilities` that
-defines the browser to use (by default Chrome).
+WebDriverIO CLI handles configuring and installing dependencies. Simply:
 
-By default, all files ending in `.js` that are contained in the tests
-directory in the root of the project are run. If you want to run tests for
-all ACOS-related packages uncomment line: `./node_modules/acos*/tests/*.js`.
+  1. Install wdio CLI: `npm install @wdio/cli`
+  2. Interactive configuration: `./node_modules/.bin/wdio config`
+
+Required settings are the testing framework `mocha`,
+running synchronously `sync`
+and the base url `http://localhost:3000`.
+
+Running the config command will override configuration in `wdio.conf.js`.
+The preprepared config in ACOS repository finds test suites from project root
+(`./tests/*.js`) and from any ACOS packages (`./node_modules/acos-*/tests/*.js`).
+This can be altered in `specs` array in the `wdio.conf.js` file.
 
 # Writing Tests
 
 Examples of written tests can be found in `acos-jsparsons-python` module. For
-WebDriverIO details refer to the [WebDriverIO API Docs](http://webdriver.io/api.html).
+WebDriverIO details refer to the [WebDriverIO API Docs](https://webdriver.io/docs/api.html).
