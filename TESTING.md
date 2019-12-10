@@ -10,9 +10,10 @@ environment and run tests:
   3. Run tests in Acos folder:
     `./node_modules/.bin/wdio`
 
-You can also run individual tests/suites, e.g.
-`./node_modules/.bin/wdio --mochaOpts.grep 'ps_hello'`
-would run tests that match with `ps_hello`.
+You can also run individual test specifications e.g.
+`./node_modules/.bin/wdio --spec node_modules/acos-jsparsons-python/tests/basic-content-tests.js`
+or individual tests with name matching e.g.
+`./node_modules/.bin/wdio --mochaOpts.grep 'ps_hello'`.
 
 For more detailed on getting started with WebDriverIO,
 see https://webdriver.io/docs/gettingstarted.html

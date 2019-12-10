@@ -1,11 +1,19 @@
-var should = require('chai').should();
+let chai = require('chai');
+chai.should();
 
 describe('Acos Server', () => {
 
+  /**
+   * Note: the following spec assumes that the complete test spec is executed.
+   * If you plan to execute individual tests separately each test must
+   * be self-contained and no assumptions of previous state can be made,
+   * e.g. each test must navigate the browser to required url which would
+   * hurt the efficiency and clarity to some degree.
+   */
   describe('Acos frontpage', () => {
-    browser.url('/');
 
     it('should load and display title', () => {
+      browser.url('/');
       browser.getTitle().should.equal('ACOS Server');
     });
 
