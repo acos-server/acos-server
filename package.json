@@ -1,8 +1,20 @@
 {
   "name": "acos-server",
   "version": "0.2.3",
+  "nodemonConfig": {
+    "ignoreRoot": [
+      ".git"
+    ],
+    "ext": "xml, json, js, html, css",
+    "ignore": [
+      "test/*",
+      "docs/*"
+    ],
+    "delay": "1000"
+  },
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "dev": "nodemon ./bin/www"
   },
   "dependencies": {
     "acos-annotated": "^0.2.0",
@@ -30,6 +42,7 @@
     "@wdio/sync": "^5.16.12",
     "chai": "^4.2.0",
     "chromedriver": "^78.0.1",
+    "nodemon": "^2.0.4",
     "wdio-chromedriver-service": "^5.0.2"
   },
   "repository": {
