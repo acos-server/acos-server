@@ -22,6 +22,10 @@ var CONFIG = {
     // the package name must start with 'acos-'.
     autoDiscovery: true,
 
+
+    // Default port used by the connect-livereload package
+    connectLiveReloadPort: 35729,
+
     // Insert all the installed package names here to use them
     // These are ignored if autoDiscovery is true!
     installedPackages: [
