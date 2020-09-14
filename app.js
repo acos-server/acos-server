@@ -19,6 +19,9 @@ var archiver = require('archiver');
 var crypto = require('crypto');
 var _ = require('lodash');
 
+
+const publicDirectory = path.join(__dirname, 'public');
+
 var app = express();
 
 if (app.get('env') !== 'development') {
@@ -43,7 +46,28 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(compression());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(publicDirectory));
+
+if (app.get('env') === 'development') {
+  const livereload = require('livereload');
+  const connectLiveReload = require('connect-livereload');
+
+  // livereload configuration
+  let liveReloadServer = livereload.createServer();
+  liveReloadServer.watch(publicDirectory);
+  liveReloadServer.server.once("connection", () => {
+    setTimeout( () =>{
+    liveReloadServer.refresh("/");
+    }, 100);
+  })
+
+  app.use(connectLiveReload({
+    port: config.connectLiveReloadPort
+  }));
+}
+
+
+
 
 // ********************************************************************************
 // ACOS code begins
@@ -624,7 +648,6 @@ handlers.loggers.logstore.handleEvent = function(event, payload, req, res, proto
 
 // Dummy logger for debugging purposes
 if (app.get('env') === 'development') {
-
   handlers.loggers.dummy = {};
   handlers.loggers.dummy.handleEvent = function(event, payload, req, res, protocolData) {
     console.log('[ACOS Server] ' + 'INFO:'.green + ' Event received => event: %s, payload: %j , protocol data: %j',
