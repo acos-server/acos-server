@@ -18,6 +18,7 @@ var nunjucks = require('nunjucks');
 var archiver = require('archiver');
 var crypto = require('crypto');
 var _ = require('lodash');
+var config = require('./config');
 
 
 const publicDirectory = path.join(__dirname, 'public');
@@ -76,7 +77,6 @@ if (app.get('env') === 'development') {
 // ********************************************************************************
 // Initialization
 
-var config = require('./config');
 
 console.log('[ACOS Server]' + ' INFO: '.green + 'Starting ACOS at ' + new Date() + '\n');
 
